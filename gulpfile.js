@@ -1,15 +1,15 @@
 var gulp = require('gulp'),
     uglify = require('gulp-uglify'),
     typescript = require('gulp-typescript'),
-    small = require('small'),
+    small = require('small').gulp,
     sourcemaps = require('gulp-sourcemaps');
 
-var tsProject = typescript.createProject('lib/tsproject.json');
+var tsProject = typescript.createProject('lib/tsconfig.json');
 
 gulp.task('compile', () => {
     return gulp.src('lib/**/*.ts')
         .pipe(sourcemaps.init())
-        .pipe(typescript(tsProject))
+        .pipe(tsProject())
         .pipe(small('index.js', {
             externalResolve: ['node_modules'],
             globalModules: {
