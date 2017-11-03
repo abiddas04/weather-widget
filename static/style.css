@@ -19,7 +19,7 @@ h1, h2, h3 {
 }
 a:link, a:visited {
     color: #57BEDE;
-    text-decoration: underline;
+    text-decoration: none;
 }
 a:hover, a:active {
     color: #44A4C2;
