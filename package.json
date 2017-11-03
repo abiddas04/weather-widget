@@ -23,5 +23,12 @@
     "reflect-metadata": "^0.1.10",
     "rxjs": "^5.5.2",
     "zone.js": "^0.8.18"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-sourcemaps": "^2.6.1",
+    "gulp-typescript": "^3.2.3",
+    "gulp-uglify": "^3.0.0",
+    "small": "^0.2.9"
   }
 }
