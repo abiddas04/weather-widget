@@ -21,7 +21,7 @@ enum State {
     <span *ngIf="loading" class="state">Loading...</span>
     <span *ngIf="refreshing" class="state">Refreshing...</span>
     <a *ngIf="loaded || error" href="javascript:;" (click)="load()" class="state">Refresh</a>
-    <h2>{{ tomorrow ? 'Tomorrow : 'Today'}}'s weather in {{   location }}</h2>
+    <h2>{{ tomorrow ? 'Tomorrow' : 'Today'}}'s weather in {{   location }}</h2>
     <div *ngIf="error">Failed to load data.</div>
     <ul>
         <li *ngFor="#item of data">
@@ -83,4 +83,16 @@ export class Forecast {
     location = "Aurora, CO";
     data: ForecastData[] = [];
     state = State.Loading;
+    get loading() {
+        return this.state === State.Loading;
+    }
+    get refreshing() {
+        return this.state === State.Refreshing;
+    }
+    get loaded() {
+        return this.state === State.Loaded;
+    }
+    get error() {
+        return this.state === State.Error;
+    }
 }
