@@ -1,0 +1,16 @@
+<span *ngIf="loading" class="state">Loading...</span>
+<span *ngIf="refreshing" class="state">Refreshing...</span>
+<a *ngIf="loaded || error" href="javascript:;" (click)="load()" class="state">Refresh</a>
+<h2>{{ tomorrow ? 'Tomorrow' : 'Today'}}'s weather in {{   location }}</h2>
+<div *ngIf="error">Failed to load data.</div>
+<ul>
+    <li *ngFor="#item of data">
+        <div class="item-date">{{item.date}}</div>
+        <div class="item-main">{{item.main}}</div>
+        <div class="item-description">{{item.description}}</div>
+        <div class="item-temperature">
+            {{item.temperature}} {{temperatureUnit}}
+        </div>
+    </li>
+</ul>
+<div class="clearfix"></div>
