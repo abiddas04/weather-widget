@@ -20,10 +20,65 @@ enum State {
 @Component({
     selector: "weather-forecast",
     viewProviders: [HTTP_PROVIDERS],
-    templateUrl: "./forecast.html",
-    styleUrls: ["../static/forecast.css"]
+    template: `
+    <span *ngIf="loading" class="state">Loading...</span>
+    <span *ngIf="refreshing" class="state">Refreshing...</span>
+    <a *ngIf="loaded || error" href="javascript:;" (click)="load()" class="state">Refresh</a>
+    <h2>{{ tomorrow ? 'Tomorrow' : 'Today'}}'s weather in {{ location }}</h2>
+    <div *ngIf="error">Failed to load data.</div>
+    <ul>
+        <li *ngFor="#item of data">
+            <div class="item-date">{{item.date}}</div>
+            <div class="item-main">{{item.main}}</div>
+            <div class="item-description">{{item.description}}</div>
+            <div class="item-temperature">
+                {{item.temperature}} {{temperatureUnit}}
+            </div>
+        </li>
+    </ul>
+    <div class="clearfix"></div>
+    `,
+    styles: [
+    `.state {
+        float: right;
+        margin-top: 6px;
+    }
+    ul {
+        margin: 0;
+        padding: 0 0 15px;
+        list-style: none;
+        width: 100%;
+        overflow-x: scroll;
+        white-space: nowrap;
+    }
+    li {
+        display: inline-block;
+        margin-right: 15px;
+        width: 170px;
+        white-space: initial;
+    }
+    .item-date {
+        font-size: 15pt;
+        color: #165366;
+        margin-right: 10px;
+        display: inline-block;
+    }
+    .item-main {
+        font-size: 15pt;
+        display: inline-block;
+    }
+    .item-description {
+        border-top: 1px solid #44A4C2;
+        width: 100%;
+        font-size: 11pt;
+    }
+    .item-temperature {
+        font-size: 11pt;
+    }`
+    ]
 })
 export class Forecast {
+    constructor(private http: Http) { }
     temperatureUnit = "degrees Celsius";
     private _tomorrow = false;
     @Input()
@@ -51,9 +106,7 @@ export class Forecast {
     data: ForecastData[] = [];
     state = State.Loading;
 
-    constructor(private http: Http) {
-        // ...
-    }
+
 
     get loading() {
         return this.state === State.Loading;
@@ -74,6 +127,36 @@ export class Forecast {
     private formatDate(date: Date) {
         return date.getHours() + ":" + date.getMinutes() + date.getSeconds();
     }
+
+    private update(data: ForecastResponse) {
+        console.log(data);
+        if (!data.list) {
+            this.showError();
+            return;
+        }
+        const location = data.city.name + ", " + data.city.country;
+        if (this._location !== location) {
+            this._location = location;
+            this.correctLocation.emit(location);
+        }
+        this.fullData = data.list.map(item => ({
+            date: this.formatDate(new Date(item.dt * 1000)),
+            temperature: Math.round(item.main.temp - 273),
+            main: item.weather[0].main,
+            description: item.weather[0].description
+         }));
+         console.log(this.fullData);
+         this.filterData();
+         this.state = State.Loaded;
+    }
+    private showError() {
+        this.data = [];
+        this.state = State.Error;
+    }
+    private filterData() {
+        const start = this.tomorrow ? 8 : 0;
+        this.data = this.fullData.slice(start, start + 8);
+    }
     private load() {
         let path = "forecast?mode=json&";
         const start = "coordinate";
@@ -88,33 +171,4 @@ export class Forecast {
                  .map(response => response.json())
                  .subscribe(res => this.update(<ForecastResponse> res), () => this.showError());
     }
-
-    private update(data: ForecastResponse) {
-        if (!data.list) {
-            this.showError();
-            return;
-        }
-        const location = data.city.name + ", " + data.city.country;
-        if (this._location !== location) {
-            this._location = location;
-            this.correctLocation.next(location);
-        }
-        this.fullData = data.list.map(item => ({
-            date: this.formatDate(new Date(item.dt * 1000)),
-            temperature: Math.round(item.main.temp - 273),
-            main: item.weather[0].main,
-            description: item.weather[0].description
-         }));
-         this.filterData();
-         this.state = State.Loaded;
-    }
-    private showError() {
-        this.data = [];
-        this.state = State.Error;
-    }
-    private filterData() {
-        const start = this.tomorrow ? 8 : 0;
-        this.data = this.fullData.slice(start, start + 8);
-    }
-
 }

@@ -6,8 +6,10 @@ import "es6-shim";
 import { bootstrap } from "angular2/platform/browser";
 // import { FormsModule }   from "@angular/forms"; // <-- NgModel lives here
 
-import { About }  from "./about";
-import { Forecast } from "./forecast";
+// import { About }  from "./about";
+// import { Forecast } from "./forecast";
+import { Widget } from "./widget";
 
 // bootstrap(About).catch(err => console.log(err));
-bootstrap(Forecast).catch(err => console.log(err));
+// bootstrap(Forecast).catch(err => console.log(err));
+bootstrap(Widget).catch(err => console.log(err));

@@ -14,7 +14,7 @@ export function getUrl(path: string) {
 
 export interface ForecastResponse {
     city: {
-        name: string,
+        name: string;
         country: string;
     };
     list: ForecastItem[];
@@ -23,10 +23,10 @@ export interface ForecastResponse {
 export interface ForecastItem {
     dt: number;
     main: {
-        temp: number;
+        temp: number
     };
     weather: {
-        main: string;
-        description: string;
+        main: string,
+        description: string
     };
 }

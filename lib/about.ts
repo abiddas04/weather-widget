@@ -3,6 +3,7 @@ import { Component, Input } from "angular2/core";
 @Component({
     selector: "about-page",
     template: `
+        <input [(ngModel)]="location" (keyup.enter)="clickGo()" (blur)="clickGo()" />
         <h2>About</h2>
         This widget shows the weather forecast of
         <a [href]="'https://maps.google.com/?q=' + encodedLocation">
